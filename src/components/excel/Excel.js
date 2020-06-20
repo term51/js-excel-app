@@ -17,11 +17,10 @@ export class Excel {
       // $el получает созданный div со статической переменной, хранящей имя класса
       const $el = $.create('div', Component.className)
       const component = new Component($el)
-      // DEBUG - заносим компонент в глобальную область видимости для тестов
-      console.log(component.name)
-      if (component.name) {
-        window['c' + component.name] = component
-      }
+      // // DEBUG - заносим компонент в глобальную область видимости для тестов
+      // if (component.name) {
+      //   window['c' + component.name] = component
+      // }
       $el.html(component.toHTML())
       $root.append($el)
       return component
