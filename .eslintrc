@@ -14,7 +14,8 @@
       "max-len": "off",
       "arrow-parens": "off",
       "comma-dangle": "off",
-      "require-jsdoc": "off"
+      "require-jsdoc": "off",
+      "indent": "off"
    },
    "extends": [
       "eslint:recommended",

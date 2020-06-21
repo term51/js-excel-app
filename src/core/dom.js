@@ -40,6 +40,31 @@ class Dom {
     }
     return this
   }
+
+  // Геттер для dataset
+  get data() {
+    return this.$el.dataset
+  }
+
+  // поиск родителя по data атрибуту
+  closest(selector) {
+    return $(this.$el.closest(selector)) // возращает нативный элемент, поэтому оборачиваем в конструктор
+  }
+
+  // получить координаты элемента
+  getCoords() {
+    return this.$el.getBoundingClientRect() // получить набор координат
+  }
+
+  // querySelectorAll
+  findAll(selector) {
+    return this.$el.querySelectorAll(selector)
+  }
+
+  // стили
+  css(styles = {}) {
+    Object.keys(styles).forEach(key => this.$el.style[key] = styles[key])
+  }
 }
 
 // возвращаем новый инстанс класса Dom, через $

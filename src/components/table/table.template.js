@@ -7,30 +7,32 @@ const CODES = {
 }
 
 // к ячейке
-function toCell(select = false) {
-  if (select) {
-    return `
-   <div class="cell selected" contenteditable spellcheck="false"></div>
+function toCell(col) {
+  return `
+   <div class="cell" data-col="${col}" contenteditable spellcheck="false"></div>
 `
-  } else {
-    return `
-   <div class="cell" contenteditable spellcheck="false"></div>
-`
-  }
 }
 
 // к колонке
-function toColumn(col) {
+function toColumn(col, index) {
   return `
-   <div class="column">${col}</div>
+   <div class="column" data-col="${index}" data-type="resizable">
+      ${col}
+      <div class="col-resize" data-resize="col"></div>
+   </div>
 `
 }
 
 // создание строки
 function createRow(content, index = '') {
+  const resizer = index ? '<div class="row-resize" data-resize="row"></div>' : ''
   return `
-  <div class="row">
-   <div class="row-info">${index}</div>
+  <div class="row" data-type="resizable">
+   <div class="row-info">
+      ${index}
+      ${resizer}
+   </div>
+   
    <div class="row-data">${content}</div>
   </div>
 `
@@ -47,20 +49,19 @@ export function createTable(rowsCount = 15) {
   const rows = []
   // Создание колонок
   const cols = new Array(colsCount)
-      .fill('')
-      .map(toChar) // Создание букв для колонок из char кодов
-      .map(toColumn) // создание колонки, аналог .map(el => createCol(el))
-      .join('') // преобразование массива к строке
+    .fill('')
+    .map(toChar) // Создание букв для колонок из char кодов
+    .map(toColumn) // создание колонки, аналог .map(el => createCol(el))
+    .join('') // преобразование массива к строке
   // Первая строка из заглавий колонок
   rows.push(createRow(cols))
-
 
   for (let i = 0; i < rowsCount; i++) {
     // остальные строки
     const cells = new Array(colsCount)
-        .fill('')
-        .map(toCell)
-        .join('')
+      .fill('') // .map(toCell)
+      .map((_, index) => toCell(index))
+      .join('')
     rows.push(createRow(cells, i + 1))
   }
 
