@@ -7,10 +7,23 @@ const CODES = {
 }
 
 // к ячейке
-function toCell(col) {
-  return `
-   <div class="cell" data-col="${col}" contenteditable spellcheck="false"></div>
-`
+// function toCell(col) {
+//   return `
+//    <div class="cell" data-col="${col}" contenteditable spellcheck="false"></div>
+// `
+// }
+
+function toCell(row) {
+  return function(_, col) {
+    return `
+    <div class="cell"
+     data-col="${col}" 
+     data-type="cell"
+     data-id="${row}:${col}" 
+     contenteditable
+      spellcheck="false"></div>
+   `
+  }
 }
 
 // к колонке
@@ -56,13 +69,14 @@ export function createTable(rowsCount = 15) {
   // Первая строка из заглавий колонок
   rows.push(createRow(cols))
 
-  for (let i = 0; i < rowsCount; i++) {
+  for (let row = 0; row < rowsCount; row++) {
     // остальные строки
     const cells = new Array(colsCount)
       .fill('') // .map(toCell)
-      .map((_, index) => toCell(index))
+      // .map((_, index) => toCell(index))
+      .map(toCell(row))
       .join('')
-    rows.push(createRow(cells, i + 1))
+    rows.push(createRow(cells, row + 1))
   }
 
   return rows.join('')

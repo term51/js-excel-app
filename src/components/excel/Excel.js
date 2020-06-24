@@ -1,4 +1,5 @@
 import {$} from '@core/dom'
+import {Emitter} from '@/components/table/Emitter'
 
 export class Excel {
   constructor(selector, options) {
@@ -6,17 +7,22 @@ export class Excel {
     this.$el = $(selector)
     // || Если options.components components не определен, ставим пустой массив
     this.components = options.components || []
+    // Важно разместить Observer там, где взаимодействие со всеми компонентами происходит единоразово
+    this.emitter = new Emitter()
   }
 
   // возвращает корневую ноду
   getRoot() {
     const $root = $.create('div', 'excel')
 
+    const componentOptions = {
+      emitter: this.emitter
+    }
     // пройдемся по всем переданным классам
     this.components = this.components.map(Component => {
       // $el получает созданный div со статической переменной, хранящей имя класса
       const $el = $.create('div', Component.className)
-      const component = new Component($el)
+      const component = new Component($el, componentOptions)
       // // DEBUG - заносим компонент в глобальную область видимости для тестов
       // if (component.name) {
       //   window['c' + component.name] = component
@@ -36,5 +42,9 @@ export class Excel {
     this.$el.append(this.getRoot())
     // добавляем слушателей после создания элементов
     this.components.forEach(component => component.init())
+  }
+
+  destroy() {
+    this.components.forEach(component => component.destroy())
   }
 }
