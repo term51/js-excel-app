@@ -13,6 +13,22 @@ class Dom {
     return this.$el.outerHTML.trim()
   }
 
+  // добавить текст
+  text(text) {
+    if (typeof text === 'string') {
+      // setter
+      this.$el.textContent = text
+      return this
+    }
+    // если input
+    if (this.$el.tagName.toLowerCase() === 'input') {
+      // getter
+      return this.$el.value.trim()
+    }
+    // getter
+    return this.$el.textContent.trim()
+  }
+
   // чистка HTML
   clear() {
     this.html('')
@@ -56,14 +72,48 @@ class Dom {
     return this.$el.getBoundingClientRect() // получить набор координат
   }
 
+  // querySelector
+  find(selector) {
+    return $(this.$el.querySelector(selector))
+  }
+
   // querySelectorAll
   findAll(selector) {
     return this.$el.querySelectorAll(selector)
   }
 
-  // стили
+  // работа со стилями
   css(styles = {}) {
     Object.keys(styles).forEach(key => this.$el.style[key] = styles[key])
+  }
+
+  // возвраащет id, если ничего не передавать.
+  // если передать параметр возвращает объект со строкой и столбцом
+  id(parse) {
+    if (parse) {
+      const parsed = this.id().split(':')
+      return {
+        row: +parsed[0],
+        col: +parsed[1]
+      }
+    }
+    return this.data.id
+  }
+
+  focus() {
+    this.$el.focus()
+    // возврат chain
+    return this
+  }
+
+  addClass(className) {
+    this.$el.classList.add(className)
+    return this
+  }
+
+  removeClass(className) {
+    this.$el.classList.remove(className)
+    return this
   }
 }
 

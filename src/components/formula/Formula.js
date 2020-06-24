@@ -1,29 +1,51 @@
 import {ExcelComponent} from '@core/ExcelComponent'
+import {$} from '@core/dom'
 
 export class Formula extends ExcelComponent {
   // static - вызов переменной без создания инстанса класса
   static className = 'excel__formula'
 
-  constructor($root) {
+  constructor($root, options) {
     super($root, {
       name: 'Formula',
-      listeners: ['input', 'click']
+      listeners: ['input', 'keydown'],
+      ...options // передаем в родительский класс
     })
   }
 
   toHTML() {
     return `
     <div class="info">fx</div>
-    <div class="input" contenteditable spellcheck="false"></div>
+    <div id="formula" class="input" contenteditable spellcheck="false"></div>
     `
+  }
+
+  init() {
+    super.init()
+
+    this.$formula = this.$root.find('#formula')
+
+    this.$on('table:select', $cell => {
+      this.$formula.text($cell.text())
+    })
+
+    this.$on('table:input', $cell => {
+      this.$formula.text($cell.text())
+    })
   }
 
   // какие слушатели создаются в конструкторе, такие и методы
   onInput(event) {
-    console.log('Formula: onInput', event.target.textContent.trim())
+    this.$emit('formula:input', $(event.target).text())
   }
 
-  onClick(event) {
-    console.log(event)
+// Описания в Table.js
+  onKeydown(event) {
+    const keys = ['Enter', 'Tab']
+    const {key} = event
+    if (keys.includes(key) && !event.shiftKey) {
+      event.preventDefault()
+      this.$emit('formula:done')
+    }
   }
 }
