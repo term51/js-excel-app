@@ -15,7 +15,7 @@ class Dom {
 
   // добавить текст
   text(text) {
-    if (typeof text === 'string') {
+    if (typeof text !== 'undefined') {
       // setter
       this.$el.textContent = text
       return this
@@ -87,6 +87,14 @@ class Dom {
     Object.keys(styles).forEach(key => this.$el.style[key] = styles[key])
   }
 
+  getStyles(styles = []) {
+    // получить стили в виде объекта (res-результат,s-название текущего стиля)
+    return styles.reduce((res, s) => {
+      res[s] = this.$el.style[s]
+      return res
+    }, {})
+  }
+
   // возвраащет id, если ничего не передавать.
   // если передать параметр возвращает объект со строкой и столбцом
   id(parse) {
@@ -104,6 +112,14 @@ class Dom {
     this.$el.focus()
     // возврат chain
     return this
+  }
+
+  attr(name, value) {
+    if (value) {
+      this.$el.setAttribute(name, value)
+      return this
+    }
+    return this.$el.getAttribute(name)
   }
 
   addClass(className) {
