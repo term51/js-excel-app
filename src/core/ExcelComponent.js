@@ -5,6 +5,8 @@ export class ExcelComponent extends DomListener {
     super($root, options.listeners)
     this.name = options.name || ''
     this.emitter = options.emitter // теперь у васех наследников есть один и тот же объект Observer
+    this.subscribe = options.subscribe || [] //
+    this.store = options.store // теперь у васех наследников есть один и тот же объект Redux store
     this.unsubscribers = []
     this.prepare() // +хук, вызывает перед init
   }
@@ -30,6 +32,20 @@ export class ExcelComponent extends DomListener {
     this.unsubscribers.push(unsub)
   }
 
+  // методы для Redux store
+  $dispatch(action) {
+    this.store.dispatch(action)
+  }
+
+  // Сюла приходят только изменения по тем полям, на которые мы подписались
+  storeChanged() {
+  }
+
+  //
+  isWatching(key) {
+    return this.subscribe.includes(key)
+  }
+
   // Хук, срабатывает после рендеринга DOM дерева
   init() {
     // добавляются дом слушатели
@@ -40,6 +56,6 @@ export class ExcelComponent extends DomListener {
   destroy() {
     // чистка слушателей
     this.removeDOMListeners()
-    this.unsubscribers.forEach(unsub => unsub())
+    this.unsubscribers.forEach(unsub => unsub()) // ?#
   }
 }

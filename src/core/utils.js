@@ -17,3 +17,48 @@ export function range(start, end) {
     .fill('')
     .map((_, index) => start + index)
 }
+
+// взаимодействие со стораджем
+export function storage(key, data) {
+  if (!data) {
+    // getter
+    return JSON.parse(localStorage.getItem(key))
+  }
+  // setter
+  localStorage.setItem(key, JSON.stringify(data))
+}
+
+//
+export function isEqual(a, b) {
+  if (typeof a === 'object' && typeof b === 'object') {
+    return JSON.stringify(a) === JSON.stringify(b) // хак для проверки объектов
+  }
+  return a === b
+}
+
+// перевод строки из верблюжего стиля в тире
+export function camelToDashCase(str) {
+  return str.replace(/([A-Z])/g, g => `-${g[0].toLowerCase()}`)
+}
+
+// привести к строке со стилями
+export function toInlineStyles(styles = {}) {
+  return Object.keys(styles)
+    .map(key => `${camelToDashCase(key)}: ${styles[key]}`)
+    .join(';')
+}
+
+// оптимизация, задержка перед сохранением в storage
+export function debounce(fn, wait) {
+  let timeout
+  return function (...args) {
+    const later = () => {
+      clearTimeout(timeout)
+      // eslint-disable-next-line
+      fn.apply(this, args)
+    }
+    clearTimeout(timeout)
+    timeout = setTimeout(later, wait)
+  }
+}
+
