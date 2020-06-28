@@ -1,11 +1,11 @@
 import {$} from '@core/dom'
 import {Emitter} from '@core/Emitter'
 import {StoreSubscriber} from '@core/StoreSubscriber'
+import {updateDate} from '@/redux/actions'
+import {preventDefault} from '@core/utils'
 
 export class Excel {
-  constructor(selector, options) {
-    // $el - черенз $ обозначается DOM нода
-    this.$el = $(selector)
+  constructor(options) {
     // || Если options.components components не определен, ставим пустой массив
     this.components = options.components || []
     // redux store
@@ -42,11 +42,16 @@ export class Excel {
   }
 
   // вывод верстки
-  render() {
+  init() {
+    // проверка, если это продакшен, не давать пользователю нажимать правую кнопку мыши
+    if (process.env.NODE_ENV === 'production') {
+      document.addEventListener('contextmenu', preventDefault)
+    }
+
     // Мультивставка: elem.insertAdjacentHTML(where, html)
     // where[beforeBegin-перед elem, afterBegin-внутрь elem,в начало,beforeEnd-внутрь elem,в конец, afterEnd-после elem]
     // this.$el.insertAdjacentHTML('afterbegin', `<h1>test</h1>`)
-    this.$el.append(this.getRoot())
+    this.store.dispatch(updateDate())
     // подписываем компоненты
     this.subscriber.subscribeComponents(this.components)
     // добавляем слушателей после создания элементов
@@ -57,5 +62,6 @@ export class Excel {
     // Отписка компонентов
     this.subscriber.unsubscribeFromStore()
     this.components.forEach(component => component.destroy())
+    document.removeEventListener('contextmenu', preventDefault)
   }
 }

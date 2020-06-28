@@ -23,6 +23,11 @@ export class StoreSubscriber {
         }
       })
       this.prevState = this.store.getState()
+
+      // для режима разработки добавить глобально redux
+      if (process.env.NODE_ENV === 'development') {
+        window['redux'] = this.prevState
+      }
     })
   }
 

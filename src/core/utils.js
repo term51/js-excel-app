@@ -62,3 +62,12 @@ export function debounce(fn, wait) {
   }
 }
 
+// хак, отмена мутации
+export function clone(obj) {
+  return JSON.parse(JSON.stringify(obj))
+}
+
+// отмена стандартного поведения
+export function preventDefault(event) {
+  event.preventDefault()
+}
