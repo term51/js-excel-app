@@ -1,5 +1,5 @@
 // функции создающие необходимы обхекты action для redux
-import {CHANGE_TEXT, CHANGE_STYLES, TABLE_RESIZE, APPLY_STYLE} from './types'
+import {CHANGE_TEXT, CHANGE_STYLES, TABLE_RESIZE, APPLY_STYLE, UPDATE_DATE} from './types'
 import {CHANGE_TITLE} from '@/redux/types'
 
 // Action creator
@@ -37,5 +37,11 @@ export function changeTitle(data) {
   return {
     type: CHANGE_TITLE,
     data
+  }
+}
+
+export function updateDate() {
+  return {
+    type: UPDATE_DATE
   }
 }
