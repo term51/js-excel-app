@@ -1,5 +1,6 @@
 import {$} from '../dom'
 import {ActiveRouter} from './ActiveRouter'
+import {Loader} from '../../components/Loader'
 
 //  import {ActiveRouter} from '@core/router/ActiveRouter'
 
@@ -9,6 +10,8 @@ export class Router {
 
     this.$placeholder = $(selector)
     this.routes = routes
+
+    this.loader = new Loader()
 
     this.page = null
     // привязка к текущему контексту
@@ -22,17 +25,19 @@ export class Router {
     this.changePageHandler()
   }
 
-  changePageHandler() {
+  async changePageHandler() {
     // если страница уже была загружена, очистить память
     if (this.page) this.page.destroy()
     // очистка от старого шаблона
-    this.$placeholder.clear()
+    this.$placeholder.clear().append(this.loader)
     // переключение шаблонов
     const Page = ActiveRouter.path.includes('excel') ? this.routes.excel : this.routes.dashboard
     // инстанс Page
     this.page = new Page(ActiveRouter.param)
+
+    const root = await this.page.getRoot()
     // добавление в компонента в шаблон
-    this.$placeholder.append(this.page.getRoot())
+    this.$placeholder.clear().append(root)
 
     // инициализация компонента
     this.page.afterRender()

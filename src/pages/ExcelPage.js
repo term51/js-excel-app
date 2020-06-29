@@ -1,31 +1,35 @@
-import {Page} from '@core/Page'
+import {Page} from '@core/page/Page'
 import {createStore} from '@core/store/createStore'
 import {rootReducer} from '@/redux/rootReducer'
-import {debounce, storage} from '@core/utils'
 import {Excel} from '@/components/excel/Excel'
 import {Header} from '@/components/header/Header'
 import {Toolbar} from '@/components/toolbar/Toolbar'
 import {Formula} from '@/components/formula/Formula'
 import {Table} from '@/components/table/Table'
 import {normalizeInitialState} from '@/redux/initialState'
+import {StateProcessor} from '@core/page/StateProcessor'
+import {LocalStorageClient} from '@/shared/LocalStorageClient'
 
-function storageName(param) {
-  return 'excel:' + param
-}
 
 export class ExcelPage extends Page {
-  getRoot() {
-    // если в параметрах что-то есть, оставить, иначе задать ID из даты
-    const params = this.params ? this.params : Date.now().toString()
+  // Dependency Inversion Principle (применив данный принцип в будущем можно будет избежать большего рефакторинга)
+  constructor(param) {
+    super(param)
 
-    const state = storage(storageName(params))
+    this.storeSub = null
+    this.processor = new StateProcessor(
+      // теперь тут можно подключить разные клиенты для работы с данными
+      new LocalStorageClient(this.params)
+    )
+  }
+
+  async getRoot() {
+    const state = await this.processor.get()
+    // подписка
     const store = createStore(rootReducer, normalizeInitialState(state))
 
-    const stateListener = debounce(state => {
-      storage(storageName(params), state)
-    }, 500)
+    this.storeSub = store.subscribe(this.processor.listen)
 
-    store.subscribe(stateListener)
     this.excel = new Excel({
       // Передаем компоненты в Excel для последущего рендеринга
       components: [Header, Toolbar, Formula, Table],
@@ -42,5 +46,6 @@ export class ExcelPage extends Page {
 
   destroy() {
     this.excel.destroy()
+    this.storeSub.unsubscribe()
   }
 }

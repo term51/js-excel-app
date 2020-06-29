@@ -1,7 +1,8 @@
 // класс для отрисовки компонентов
 export class Page {
   constructor(params) {
-    this.params = params
+    // если в параметрах что-то есть, оставить, иначе задать ID из даты
+    this.params = params || Date.now().toString()
   }
 
   getRoot() {
@@ -9,7 +10,8 @@ export class Page {
   }
 
   // хук, после рендера страницы
-  afterRender() {}
+  afterRender() {
+  }
 
   destroy() {
 

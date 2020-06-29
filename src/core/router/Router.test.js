@@ -1,5 +1,5 @@
 import {Router} from './Router'
-import {Page} from '../Page'
+import {Page} from '../page/Page'
 
 // создаём моковые класс, вместо реального
 class DashboardPage extends Page {
