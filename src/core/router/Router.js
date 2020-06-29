@@ -1,5 +1,5 @@
-import {$} from '@core/dom'
-import {ActiveRouter} from '@core/router/ActiveRouter'
+import {$} from '../dom'
+import {ActiveRouter} from './ActiveRouter'
 
 //  import {ActiveRouter} from '@core/router/ActiveRouter'
 

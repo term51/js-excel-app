@@ -1,4 +1,4 @@
-// Redux, Store
+ // Redux, Store
 export function createStore(rootReducer, initialState = {}) {
   //  type:'__INIT__' - системный тип, идет инициализация
   // {...initialState} - чтобы небыло мутаций
